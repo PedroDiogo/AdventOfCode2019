@@ -1,0 +1,10 @@
+[package]
+name = "advent_of_code_2019"
+version = "0.1.0"
+authors = ["Pedro Diogo"]
+
+[lib]
+name = "advent"
+path ="./src/lib/lib.rs"
+
+[dependencies]
