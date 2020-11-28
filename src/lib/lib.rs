@@ -5,6 +5,11 @@ pub fn read_inputs(filename: &str) -> String {
     .expect("Couldn't read file");
 }
 
+pub fn split_lines_into_vec_str(input: &str) -> Vec<&str> {
+    input.split("\n")
+    .collect()
+}
+
 pub fn split_lines_into_vec_int(input: &str) -> Vec<i64> {
     return split_into_vec_int(input, "\n");
 }
