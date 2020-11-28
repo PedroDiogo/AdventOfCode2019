@@ -12,6 +12,10 @@ pub fn run() {
     let part_one = get_total_number_of_orbits(&orbits_tree);
 
     println!("Part one: {}", part_one);
+
+    let part_two = get_distance_between_you_and_san(&orbits_tree);
+
+    println!("Part two: {}", part_two);
 }
 
 fn get_orbits_tree<'a>(inputs: &'a Vec<&str>) -> HashMap<&'a str, Vec<&'a str>> {
@@ -55,6 +59,45 @@ fn get_total_number_of_orbits(orbits_tree: &HashMap<&str, Vec<&str>>) -> i32 {
     total_orbits
 }
 
+fn get_path_until_node<'a>(orbits_tree: &HashMap<&str, Vec<&'a str>>, node: &str) -> Vec<&'a str> {
+    let root = "COM";
+    let mut queue : Vec<(&str, Vec<&'a str>)> = vec![(root, vec![])];
+
+    let mut path : Vec<&'a str> = Vec::new();
+    while !queue.is_empty() {
+        let (child_node, child_path) = queue.remove(0);
+
+        if child_node == node {
+            path = child_path;
+            break;
+        }
+
+        for next_node in orbits_tree.get(child_node).unwrap_or(&vec![]) {
+            let mut next_path : Vec<&'a str> = child_path.clone();
+            next_path.push(next_node);
+            queue.push((next_node, next_path));
+        }
+    }
+    path
+}
+
+fn get_distance_between_you_and_san(orbits_tree: &HashMap<&str, Vec<&str>>) -> i32 {
+    let path_to_you = get_path_until_node(orbits_tree, "YOU");
+    let path_to_san = get_path_until_node(orbits_tree, "SAN");
+    let min_len = std::cmp::min(path_to_you.len(), path_to_san.len());
+
+    let mut distance = 0;
+    for i in 0..min_len {
+        if path_to_you[i] != path_to_san[i] {
+            distance = path_to_you.len()-i-1 + path_to_san.len()-i-1;
+            break;
+        }
+    }
+
+    distance as i32
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -63,5 +106,21 @@ mod tests {
         let tree = vec!["COM)B", "B)C", "C)D", "D)E", "E)F", "B)G", "G)H", "D)I", "E)J", "J)K", "K)L"];
         let tree = get_orbits_tree(&tree);
         assert_eq!(42, get_total_number_of_orbits(&tree))
+    }
+
+    #[test]
+    fn test_get_path_until_node() {
+        let tree = vec!["COM)B","B)C","C)D","D)E","E)F","B)G","G)H","D)I","E)J","J)K","K)L","K)YOU","I)SAN"];
+        let expected_path_until_you = vec!["B", "C", "D", "E", "J", "K", "YOU"];
+        let tree = get_orbits_tree(&tree);
+        assert_eq!(expected_path_until_you, get_path_until_node(&tree, "YOU"))
+    }
+
+    #[test]
+    fn test_case_2() {
+        let tree = vec!["COM)B","B)C","C)D","D)E","E)F","B)G","G)H","D)I","E)J","J)K","K)L","K)YOU","I)SAN"];
+        let tree = get_orbits_tree(&tree);
+
+        assert_eq!(4, get_distance_between_you_and_san(&tree));
     }
 }
