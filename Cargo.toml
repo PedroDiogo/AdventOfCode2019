@@ -8,3 +8,4 @@ name = "advent"
 path ="./src/lib/lib.rs"
 
 [dependencies]
+ansi_term = "0.12.1"
