@@ -10,6 +10,7 @@ fn main() {
         4 => day4::run(),
         5 => day5::run(),
         6 => day6::run(),
+        8 => day8::run(),
         _ => println!("Unknown day - {}", get_day())
     }
 }
