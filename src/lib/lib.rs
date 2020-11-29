@@ -1,5 +1,7 @@
 use std::fs; 
 
+pub mod intcode;
+
 pub fn read_inputs(filename: &str) -> String {
     return fs::read_to_string(filename)
     .expect("Couldn't read file");
